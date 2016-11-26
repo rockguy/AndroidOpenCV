@@ -2,10 +2,15 @@ package com.example.vinnik.coursework3;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.icu.util.Calendar;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -13,6 +18,8 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.CvException;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -24,7 +31,11 @@ import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
+import java.util.Date;
+import java.util.Timer;
 
 public class MainActivity extends Activity
         implements CameraBridgeViewBase.CvCameraViewListener {
@@ -32,6 +43,8 @@ public class MainActivity extends Activity
     // Used to load the 'native-lib' library on application startup.
 
     private static final String TAG="MainActivity";
+
+    boolean b=false;
 
     static {
         System.loadLibrary("native-lib");
@@ -46,6 +59,7 @@ public class MainActivity extends Activity
 
     private CameraBridgeViewBase openCvCameraView;
     private CascadeClassifier cascadeClassifier;
+    private Button button;
     private Mat grayscaleImage;
     private int absoluteFaceSize;
 
@@ -108,6 +122,12 @@ public class MainActivity extends Activity
         openCvCameraView = new JavaCameraView(this, -1);
         setContentView(openCvCameraView);
         openCvCameraView.setCvCameraViewListener(this);
+        button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                b=true;
+            }
+        });
     }
 
 
@@ -143,9 +163,62 @@ public class MainActivity extends Activity
         Rect[] facesArray = faces.toArray();
         for (int i = 0; i <facesArray.length; i++)
             Imgproc.rectangle(aInputFrame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3);
-
+        if(b)
+        {
+            SaveFaces(aInputFrame,facesArray);
+            b=false;
+        }
 
         return aInputFrame;
+    }
+
+    public void SaveFaces(Mat fullImage,Rect[] faces) {
+        Date date = new Date();
+
+        for (int i = 0; i < faces.length; i++) {
+            Mat face = new Mat(fullImage, faces[i]);
+            Bitmap bmp = null;
+            try {
+                bmp = Bitmap.createBitmap(face.cols(), face.rows(), Bitmap.Config.ARGB_8888);
+                Utils.matToBitmap(face, bmp);
+            } catch (CvException e) {
+                Log.d(TAG, e.getMessage());
+            }
+            face.release();
+
+
+            FileOutputStream out = null;
+
+            String filename = "frame" + date.getTime() + ".png";
+
+            File sd = new File(Environment.getExternalStorageDirectory() + "/frames");
+            boolean success = true;
+            if (!sd.exists()) {
+                success = sd.mkdir();
+            }
+            if (success) {
+                File dest = new File(sd, filename);
+                try {
+                    out = new FileOutputStream(dest);
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+                    // PNG is a lossless format, the compression factor (100) is ignored
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d(TAG, e.getMessage());
+                } finally {
+                    try {
+                        if (out != null) {
+                            out.close();
+                            Log.d(TAG, "OK!!");
+                        }
+                    } catch (IOException e) {
+                        Log.d(TAG, e.getMessage() + "Error");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 
