@@ -122,12 +122,11 @@ public class MainActivity extends Activity
         openCvCameraView = new JavaCameraView(this, -1);
         setContentView(openCvCameraView);
         openCvCameraView.setCvCameraViewListener(this);
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                b=true;
-            }
-        });
+    }
+
+    public void takePhotoes(View view)
+    {
+        b=true;
     }
 
 
