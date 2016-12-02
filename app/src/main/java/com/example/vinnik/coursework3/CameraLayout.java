@@ -43,10 +43,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 
 public class CameraLayout extends Activity
-        implements CameraBridgeViewBase.CvCameraViewListener {
+        implements CameraBridgeViewBase.CvCameraViewListener2 {
 
     // Used to load the 'native-lib' library on application startup.
 
@@ -87,8 +86,6 @@ public class CameraLayout extends Activity
             }
         }
     };
-
-
     private void initializeOpenCVDependencies() {
 
 
@@ -124,14 +121,7 @@ public class CameraLayout extends Activity
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Date date = new Date();
-
-            Context context = getApplicationContext();
-            CharSequence text = "Hello toast!";
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            Toast.makeText(getApplicationContext(), "Image saving", Toast.LENGTH_SHORT).show();
 
             for (int i = 0; i < facesArray.length; i++) {
                 Mat face = new Mat(currentImage, facesArray[i]);
@@ -144,58 +134,48 @@ public class CameraLayout extends Activity
                 }
                 face.release();
 
+//todo:Здесь будет проверка лиц
 
-                FileOutputStream out = null;
                 Drawable icon;
                 icon = new BitmapDrawable(getResources(),bmp);
-                String Name = openFileNameDialog(icon);
-                //todo:Ввод названия изображения с экрана
-                String filename = "frame" + Name + ".png";
-
-                File sd = new File(Environment.getExternalStorageDirectory() + "/frames");
-                boolean success = true;
-                if (!sd.exists()) {
-                    success = sd.mkdir();
-                }
-                if (success) {
-                    File dest = new File(sd, filename);
-                    try {
-                        out = new FileOutputStream(dest);
-                        bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                        // PNG is a lossless format, the compression factor (100) is ignored
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.d(TAG, e.getMessage());
-                    } finally {
-                        try {
-                            if (out != null) {
-                                out.close();
-                                Log.d(TAG, "OK!!");
-                            }
-                        } catch (IOException e) {
-                            Log.d(TAG, e.getMessage() + "Error");
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                FileInputStream fis = null;
-
-                try {
-                    fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/frames/"+filename);
-                    saveImage(fis);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
+                openFileNameDialog(icon,bmp);
             }
-
         }
     };
 
+    private void saveToSDCard(Bitmap bmp,String filename){
+        FileOutputStream out = null;
+        File sd = new File(Environment.getExternalStorageDirectory() + "/frames");
+        boolean success = true;
+        if (!sd.exists()) {
+            success = sd.mkdir();
+        }
+        if (success) {
+            File dest = new File(sd, filename);
+            try {
+                out = new FileOutputStream(dest);
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+                // PNG is a lossless format, the compression factor (100) is ignored
 
-    private String openFileNameDialog(Drawable icon)
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(TAG, e.getMessage());
+            } finally {
+                try {
+                    if (out != null) {
+                        out.close();
+                        Log.d(TAG, "OK!!");
+                    }
+                } catch (IOException e) {
+                    Log.d(TAG, e.getMessage() + "Error");
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private void openFileNameDialog(Drawable icon, final Bitmap bmp)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Введите Фамилию Имя и Отчество человека");
@@ -211,7 +191,16 @@ public class CameraLayout extends Activity
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Text[0] = input.getText().toString();
+                String filename = "frame " +  input.getText().toString() + ".png";
+                saveToSDCard(bmp,filename);
+
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/frames/"+filename);
+                    saveImage(fis);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -223,29 +212,11 @@ public class CameraLayout extends Activity
         //// TODO: Надо вызвать сразу, а не после сохранения файла.
         builder.create();
         builder.show();
-        return m_Text[0];
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        db=this.openOrCreateDatabase("faces.db",Context.MODE_PRIVATE,null);
-        db.execSQL("create table if not exists faceList (a blob)");
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-
-        openCvCameraView = new JavaCameraView(this, -1);
-        openCvCameraView.setOnClickListener(onClickListener);
-        setContentView(openCvCameraView);
-        openCvCameraView.setCvCameraViewListener(this);
     }
 
     public void saveImage(FileInputStream fis)
     {
         try {
-
             byte[] image = new byte[fis.available()];
             fis.read(image);
 
@@ -263,6 +234,25 @@ public class CameraLayout extends Activity
             e.printStackTrace();
         }
     }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        db=this.openOrCreateDatabase("faces.db",Context.MODE_PRIVATE,null);
+        db.execSQL("create table if not exists faceList (a blob)");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+        openCvCameraView = new JavaCameraView(this, -1);
+        openCvCameraView.setOnClickListener(onClickListener);
+        setContentView(openCvCameraView);
+        openCvCameraView.setCvCameraViewListener(this);
+    }
+
+
     public void getImage()
     {
         Cursor c = db.rawQuery("select * from tb",null);
@@ -291,14 +281,14 @@ public class CameraLayout extends Activity
 
 
     @Override
-    public Mat onCameraFrame(Mat aInputFrame) {
-        currentImage = aInputFrame;
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame aInputFrame) {
+        currentImage = aInputFrame.gray();
         // Create a grayscale image
         //Imgproc.cvtColor(aInputFrame, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
         MatOfRect faces = new MatOfRect();
         // Use the classifier to detect faces
         if (cascadeClassifier != null) {
-            cascadeClassifier.detectMultiScale(aInputFrame, faces, 1.1, 2, 2,
+            cascadeClassifier.detectMultiScale(currentImage, faces, 1.1, 2, 2,
                     new Size(absoluteFaceSize, absoluteFaceSize), new Size());
         }
         //Rect rect = new Rect(20,20,500,500);
@@ -307,14 +297,10 @@ public class CameraLayout extends Activity
         // If there are any faces found, draw a rectangle around it
         facesArray = faces.toArray();
         for (int i = 0; i <facesArray.length; i++)
-            Imgproc.rectangle(aInputFrame, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3);
+            Imgproc.rectangle(currentImage, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3);
 
-
-        return aInputFrame;
+        return currentImage;
     }
-
-
-
 
     @Override
     public void onResume() {

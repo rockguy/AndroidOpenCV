@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.example.vinnik.coursework3.MainActivity">
+<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:fitsSystemWindows="true"-->
+    <!--tools:context="com.example.vinnik.coursework3.MainActivity">-->
 
     <!--<android.support.design.widget.AppBarLayout-->
     <!--android:layout_width="match_parent"-->
@@ -38,29 +38,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <org.opencv.android.JavaCameraView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:visibility="gone"
-            android:id="@+id/view"
-            opencv:camera_id="any" />
+        <!--<org.opencv.android.JavaCameraView-->
+            <!--android:layout_width="0px"-->
+            <!--android:layout_height="0px"-->
+            <!--android:visibility="invisible"-->
+            <!--android:id="@+id/view"-->
+            <!--opencv:camera_id="any"-->
+            <!--android:onClick="SaveFaces"-->
+            <!--android:clickable="true"/>-->
 
         <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView" />
-
-        <Button
-            android:text="Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button"
-            android:onClick="takePhotoes"
-
-            />
+    <Button
+        android:text="Хочу фотать"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:visibility="visible"
+        style="@style/Widget.AppCompat.Button" />
 
     </FrameLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+
+
+<!--</android.support.design.widget.CoordinatorLayout>-->
