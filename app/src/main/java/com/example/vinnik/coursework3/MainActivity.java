@@ -44,7 +44,7 @@ public class MainActivity extends Activity{
     Button takePictureButton;
     Button getPictureButton;
     Button processingPictureButton;
-    Button button3;
+    Button listOfPErsonButton;
     ImageView imageView;
     Mat currentImage;
     private CascadeClassifier cascadeClassifier;
@@ -60,7 +60,7 @@ public class MainActivity extends Activity{
         takePictureButton = (Button) findViewById(R.id.takePictureButton);
         getPictureButton = (Button) findViewById(R.id.getPictureButton);
         processingPictureButton = (Button) findViewById(R.id.processingPictureButton);
-//        button = (Button) findViewById(R.id.button);
+        listOfPErsonButton=(Button) findViewById(R.id.listOfPErsonButton);
 
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +117,15 @@ public class MainActivity extends Activity{
                     saveToSDCard(bmp,"tempBitmap");
                 }
                 startActivity(intent);
+            }
+        });
+
+        listOfPErsonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, PersonListActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

@@ -53,7 +53,6 @@ public class CameraLayout extends Activity
     Mat currentImage;
     Mat currentImage2;
     Rect[] facesArray;
-    boolean b=false;
     SQLiteDatabase db;
 
     static {

@@ -99,6 +99,23 @@ public class FaceListActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 String filename =input.getText().toString();
                 saveToSDCard(bmp,filename);
+
+                String[] fio = filename.split(" ");
+
+//
+//                Person person = new Person();
+//                switch (fio.length) {
+//                    case 1: {person.lastName=fio[0];break;}
+//                    case 2:{person.lastName=fio[0];person.firstName=fio[1];break;}
+//                    case 3:{person.lastName=fio[0];person.firstName=fio[1];person.secondName=fio[2];break;}
+//                }
+//                Image image = new Image(bmp);
+//                person.imageList.add(image);
+//                image.owner=person;
+//                image.save();
+//                person.save();
+
+
                 File f = new File(sd.getPath()+"/"+bitmapName);
                 f.delete();
                 linLayout.removeView(v);

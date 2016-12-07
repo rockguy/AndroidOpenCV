@@ -1,87 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:fitsSystemWindows="true"-->
-    <!--tools:context="com.example.vinnik.coursework3.MainActivity">-->
-
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
-
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-    <!--<include layout="@layout/content_main" />-->
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
-
-    <!--</android.support.design.widget.CoordinatorLayout>-->
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:opencv="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:text="Сделать фотографию"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/takePictureButton"
+                android:visibility="visible"
+                style="@style/Widget.AppCompat.Button" />
 
-        <!--<org.opencv.android.JavaCameraView-->
-            <!--android:layout_width="0px"-->
-            <!--android:layout_height="0px"-->
-            <!--android:visibility="invisible"-->
-            <!--android:id="@+id/view"-->
-            <!--opencv:camera_id="any"-->
-            <!--android:onClick="SaveFaces"-->
-            <!--android:clickable="true"/>-->
-    <Button
-        android:text="Сделать фотографию"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/takePictureButton"
-        android:visibility="visible"
-        android:layout_gravity="top|left"
-        style="@style/Widget.AppCompat.Button" />
+            <Button
+                android:text="Взять фотографию"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/getPictureButton"
+                android:visibility="visible"
+                style="@style/Widget.AppCompat.Button" />
 
-    <Button
-        android:text="Взять фотографию"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/getPictureButton"
-        android:visibility="visible"
-        android:layout_gravity="top|right"
-        style="@style/Widget.AppCompat.Button" />
+            <Button
+                android:text="Обработать фото"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/processingPictureButton"
+                android:visibility="visible"
+                style="@style/Widget.AppCompat.Button" />
 
-    <Button
-        android:text="Обработать фото"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/processingPictureButton"
-        android:visibility="visible"
-        android:layout_gravity="center|left"
-        style="@style/Widget.AppCompat.Button" />
-
-    <Button
-        android:text="Хочу фотать"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button3"
-        android:visibility="visible"
-        android:layout_gravity="center|right"
-        style="@style/Widget.AppCompat.Button" />
-
+            <Button
+                android:text="Список лиц"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/listOfPErsonButton"
+                android:visibility="visible"
+                style="@style/Widget.AppCompat.Button" />
+        </LinearLayout>
     <ImageView
         android:id="@+id/imageView"
         android:layout_height="wrap_content"

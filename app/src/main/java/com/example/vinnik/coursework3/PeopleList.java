@@ -51,9 +51,13 @@ public class PeopleList extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedFromList = (listView.getItemAtPosition(i).toString());
-                File f = new File(sd.getPath()+"/"+bitmapName);
+                File f = new File(sd.getPath()+"/tempBitmap/"+bitmapName);
                 Bitmap bmp = BitmapFactory.decodeFile(f.getPath());
                 saveToSDCard(bmp,selectedFromList);
+
+
+
+
                 f.delete();
                 Intent intent = new Intent(PeopleList.this, FaceListActivity.class);
                 startActivity(intent);

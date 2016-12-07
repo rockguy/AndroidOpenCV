@@ -17,37 +17,24 @@
         android:maxWidth="300dp"
         android:contentDescription="image">
     </ImageView>
-    <TextView
-        android:id="@+id/tvPosition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:visibility="invisible">
-    </TextView>
-    <TextView
-        android:id="@+id/tvSalary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:visibility="invisible">
-    </TextView>
     <Button
         android:id="@+id/newPersonButton"
         android:layout_width="wrap_content"
         android:text="New"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|center_horizontal"
         android:visibility="visible"/>
     <Button
         android:id="@+id/deletePersonButton"
         android:text="Del"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:layout_margin="5dp"/>
     <Button
         android:id="@+id/existedPersonButton"
         android:text="Exist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:layout_margin="5dp"/>
 </LinearLayout>

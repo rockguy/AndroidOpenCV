@@ -27,6 +27,7 @@
         <activity android:name=".CameraLayout"/>
         <activity android:name=".FaceListActivity"/>
         <activity android:name=".PeopleList"/>
+        <activity android:name=".PersonListActivity"/>
 
     </application>
 
