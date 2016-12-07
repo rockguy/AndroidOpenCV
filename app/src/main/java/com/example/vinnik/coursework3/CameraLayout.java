@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -51,6 +52,7 @@ public class CameraLayout extends Activity
 
     private static final String TAG="MainActivity";
     Mat currentImage;
+    Mat currentImage2;
     Rect[] facesArray;
     boolean b=false;
     SQLiteDatabase db;
@@ -121,10 +123,17 @@ public class CameraLayout extends Activity
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Toast.makeText(getApplicationContext(), "Image saving", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Image saving", Toast.LENGTH_SHORT).show();
+            Intent intent =new Intent(CameraLayout.this, FaceListActivity.class);
+
+            File sd = new File(Environment.getExternalStorageDirectory() + "/frames/tempBitmap");
+            for (File f:sd.listFiles()
+                 ) {
+                f.delete();
+            }
 
             for (int i = 0; i < facesArray.length; i++) {
-                Mat face = new Mat(currentImage, facesArray[i]);
+                Mat face = new Mat(currentImage2, facesArray[i]);
                 Bitmap bmp = null;
                 try {
                     bmp = Bitmap.createBitmap(face.cols(), face.rows(), Bitmap.Config.ARGB_8888);
@@ -138,20 +147,26 @@ public class CameraLayout extends Activity
 
                 Drawable icon;
                 icon = new BitmapDrawable(getResources(),bmp);
-                openFileNameDialog(icon,bmp);
+                //openFileNameDialog(icon,bmp);
+
+                saveToSDCard(bmp,"tempBitmap");
             }
+
+            startActivity(intent);
+            finish();
         }
     };
 
     private void saveToSDCard(Bitmap bmp,String filename){
         FileOutputStream out = null;
-        File sd = new File(Environment.getExternalStorageDirectory() + "/frames");
+        File sd = new File(Environment.getExternalStorageDirectory() + "/frames/"+filename);
         boolean success = true;
         if (!sd.exists()) {
             success = sd.mkdir();
         }
         if (success) {
-            File dest = new File(sd, filename);
+            filename=filename+sd.list().length;
+            File dest = new File(sd, filename+".png");
             try {
                 out = new FileOutputStream(dest);
                 bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
@@ -240,8 +255,8 @@ public class CameraLayout extends Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        db=this.openOrCreateDatabase("faces.db",Context.MODE_PRIVATE,null);
-        db.execSQL("create table if not exists faceList (a blob)");
+        //db=this.openOrCreateDatabase("faces.db",Context.MODE_PRIVATE,null);
+        //db.execSQL("create table if not exists faceList (a blob)");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -283,6 +298,7 @@ public class CameraLayout extends Activity
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame aInputFrame) {
         currentImage = aInputFrame.gray();
+        currentImage2=aInputFrame.gray();
         // Create a grayscale image
         //Imgproc.cvtColor(aInputFrame, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
         MatOfRect faces = new MatOfRect();

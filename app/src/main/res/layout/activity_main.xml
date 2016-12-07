@@ -46,21 +46,48 @@
             <!--opencv:camera_id="any"-->
             <!--android:onClick="SaveFaces"-->
             <!--android:clickable="true"/>-->
+    <Button
+        android:text="Сделать фотографию"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/takePictureButton"
+        android:visibility="visible"
+        android:layout_gravity="top|left"
+        style="@style/Widget.AppCompat.Button" />
 
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView" />
+    <Button
+        android:text="Взять фотографию"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/getPictureButton"
+        android:visibility="visible"
+        android:layout_gravity="top|right"
+        style="@style/Widget.AppCompat.Button" />
+
+    <Button
+        android:text="Обработать фото"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/processingPictureButton"
+        android:visibility="visible"
+        android:layout_gravity="center|left"
+        style="@style/Widget.AppCompat.Button" />
+
     <Button
         android:text="Хочу фотать"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
+        android:id="@+id/button3"
         android:visibility="visible"
+        android:layout_gravity="center|right"
         style="@style/Widget.AppCompat.Button" />
 
-    </FrameLayout>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom"/>
+</FrameLayout>
 
 
 

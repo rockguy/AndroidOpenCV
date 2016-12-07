@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_marginTop="10dp">
+
+    <ImageView
+        android:id="@+id/faceImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:minHeight="100dp"
+        android:minWidth="100dp"
+        android:maxHeight="300dp"
+        android:maxWidth="300dp"
+        android:contentDescription="image">
+    </ImageView>
+    <TextView
+        android:id="@+id/tvPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_marginLeft="10dp"
+        android:visibility="invisible">
+    </TextView>
+    <TextView
+        android:id="@+id/tvSalary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="10dp"
+        android:visibility="invisible">
+    </TextView>
+    <Button
+        android:id="@+id/newPersonButton"
+        android:layout_width="wrap_content"
+        android:text="New"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_horizontal"
+        android:visibility="visible"/>
+    <Button
+        android:id="@+id/existedPersonButton"
+        android:text="Exist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right"
+        android:visibility="visible"/>
+</FrameLayout>
