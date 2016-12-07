@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,10 +25,9 @@ import org.opencv.core.Size;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
+import static com.example.vinnik.coursework3.ProcessingImage.saveToSDCard;
 
 public class MainActivity extends Activity{
 
@@ -60,12 +57,10 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         takePictureButton = (Button) findViewById(R.id.takePictureButton);
         getPictureButton = (Button) findViewById(R.id.getPictureButton);
         processingPictureButton = (Button) findViewById(R.id.processingPictureButton);
 //        button = (Button) findViewById(R.id.button);
-
 
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,22 +86,15 @@ public class MainActivity extends Activity{
             @Override
             public void onClick(View view) {
                 absoluteFaceSize = (int) (currentImage.height() * 0.005);
-                // Create a grayscale image
-                //Imgproc.cvtColor(aInputFrame, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
                 MatOfRect faces = new MatOfRect();
                 File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
                 File mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_default.xml");
                 cascadeClassifier = new CascadeClassifier(mCascadeFile.getAbsolutePath());
-                //Imgproc.cvtColor(currentImage,currentImage, Imgproc.COLOR_RGBA2GRAY);
-                // Use the classifier to detect faces
+
                 if (cascadeClassifier != null) {
                     cascadeClassifier.detectMultiScale(currentImage, faces, 1.1, 2, 2,
                             new Size(absoluteFaceSize, absoluteFaceSize), new Size());
                 }
-                //Rect rect = new Rect(20,20,500,500);
-                //Imgproc.rectangle(aInputFrame, rect.tl(), rect.br(), new Scalar(0, 255, 0, 255));
-                //Imgproc.line(aInputFrame, rect.tl(), rect.br(), new Scalar(0, 255, 0, 255));
-                // If there are any faces found, draw a rectangle around it
                 Rect[] facesArray = faces.toArray();
 
                 Intent intent =new Intent(MainActivity.this, FaceListActivity.class);
@@ -126,30 +114,11 @@ public class MainActivity extends Activity{
                     } catch (CvException e) {
                     }
                     face.release();
-
-//todo:Здесь будет проверка лиц
-
-                    Drawable icon;
-                    icon = new BitmapDrawable(getResources(),bmp);
-                    //openFileNameDialog(icon,bmp);
-
                     saveToSDCard(bmp,"tempBitmap");
                 }
-
                 startActivity(intent);
             }
         });
-//
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, CameraLayout.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
-
-
     }
 
     @Override
@@ -173,37 +142,6 @@ public class MainActivity extends Activity{
 
             currentImage=new Mat();
             Utils.bitmapToMat(bmp,currentImage);
-
-
-        }
-    }
-
-    private void saveToSDCard(Bitmap bmp,String filename){
-        FileOutputStream out = null;
-        File sd = new File(Environment.getExternalStorageDirectory() + "/frames/"+filename);
-        boolean success = true;
-        if (!sd.exists()) {
-            success = sd.mkdir();
-        }
-        if (success) {
-            filename=filename+sd.list().length;
-            File dest = new File(sd, filename+".png");
-            try {
-                out = new FileOutputStream(dest);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                // PNG is a lossless format, the compression factor (100) is ignored
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 

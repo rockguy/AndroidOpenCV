@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,7 +17,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,7 +27,6 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.CvException;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
@@ -44,6 +41,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static com.example.vinnik.coursework3.ProcessingImage.saveToSDCard;
 
 public class CameraLayout extends Activity
         implements CameraBridgeViewBase.CvCameraViewListener2 {
@@ -70,8 +69,6 @@ public class CameraLayout extends Activity
 
     private CameraBridgeViewBase openCvCameraView;
     private CascadeClassifier cascadeClassifier;
-    private Button button;
-    private Mat grayscaleImage;
     private int absoluteFaceSize;
 
 
@@ -89,10 +86,7 @@ public class CameraLayout extends Activity
         }
     };
     private void initializeOpenCVDependencies() {
-
-
         try {
-            // Copy the resource into a temp file so OpenCV can load it
             InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface);
             File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
             File mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_default.xml");
@@ -107,15 +101,11 @@ public class CameraLayout extends Activity
             is.close();
             os.close();
 
-
-            // Load the cascade classifier
             cascadeClassifier = new CascadeClassifier(mCascadeFile.getAbsolutePath());
         } catch (Exception e) {
             Log.e("OpenCVActivity", "Error loading cascade", e);
         }
 
-
-        // And we are ready to go
         openCvCameraView.enableView();
     }
 
@@ -142,13 +132,6 @@ public class CameraLayout extends Activity
                     Log.d(TAG, e.getMessage());
                 }
                 face.release();
-
-//todo:Здесь будет проверка лиц
-
-                Drawable icon;
-                icon = new BitmapDrawable(getResources(),bmp);
-                //openFileNameDialog(icon,bmp);
-
                 saveToSDCard(bmp,"tempBitmap");
             }
 
@@ -156,39 +139,6 @@ public class CameraLayout extends Activity
             finish();
         }
     };
-
-    private void saveToSDCard(Bitmap bmp,String filename){
-        FileOutputStream out = null;
-        File sd = new File(Environment.getExternalStorageDirectory() + "/frames/"+filename);
-        boolean success = true;
-        if (!sd.exists()) {
-            success = sd.mkdir();
-        }
-        if (success) {
-            filename=filename+sd.list().length;
-            File dest = new File(sd, filename+".png");
-            try {
-                out = new FileOutputStream(dest);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                // PNG is a lossless format, the compression factor (100) is ignored
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d(TAG, e.getMessage());
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                        Log.d(TAG, "OK!!");
-                    }
-                } catch (IOException e) {
-                    Log.d(TAG, e.getMessage() + "Error");
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
 
     private void openFileNameDialog(Drawable icon, final Bitmap bmp)
     {
@@ -254,12 +204,7 @@ public class CameraLayout extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //db=this.openOrCreateDatabase("faces.db",Context.MODE_PRIVATE,null);
-        //db.execSQL("create table if not exists faceList (a blob)");
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
 
         openCvCameraView = new JavaCameraView(this, -1);
         openCvCameraView.setOnClickListener(onClickListener);
@@ -282,10 +227,6 @@ public class CameraLayout extends Activity
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-        grayscaleImage = new Mat(height, width, CvType.CV_32FC2);
-
-
-        // The faces will be a 20% of the height of the screen
         absoluteFaceSize = (int) (height * 0.01);
     }
 
@@ -307,10 +248,6 @@ public class CameraLayout extends Activity
             cascadeClassifier.detectMultiScale(currentImage, faces, 1.1, 2, 2,
                     new Size(absoluteFaceSize, absoluteFaceSize), new Size());
         }
-        //Rect rect = new Rect(20,20,500,500);
-        //Imgproc.rectangle(aInputFrame, rect.tl(), rect.br(), new Scalar(0, 255, 0, 255));
-        //Imgproc.line(aInputFrame, rect.tl(), rect.br(), new Scalar(0, 255, 0, 255));
-        // If there are any faces found, draw a rectangle around it
         facesArray = faces.toArray();
         for (int i = 0; i <facesArray.length; i++)
             Imgproc.rectangle(currentImage, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3);

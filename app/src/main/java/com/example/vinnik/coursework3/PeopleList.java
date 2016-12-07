@@ -6,25 +6,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.vinnik.coursework3.ProcessingImage.saveToSDCard;
 
 /**
  * Created by vinnik on 06.12.2016.
  */
 
 public class PeopleList extends Activity {
-
-
     String bitmapName;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -36,18 +33,13 @@ public class PeopleList extends Activity {
             bitmapName=getIntent().getStringExtra("BitmapName");
         }
 
-
         final File sd = new File(Environment.getExternalStorageDirectory() + "/frames");
-        List<String> people = new ArrayList<String>();
+        List<String> people = new ArrayList<>();
         for (File f : sd.listFiles()) {
             if (!f.getName().contains("temp")) {
                 people.add(f.getName());
             }
         }
-
-        LayoutInflater ltInflater = getLayoutInflater();
-
-        //View PeopleList = ltInflater.inflate(R.layout.people_list, null, false);
 
         final ListView listView = (ListView)findViewById(R.id.peopleList);
 
@@ -68,34 +60,5 @@ public class PeopleList extends Activity {
                 finish();
             }
         });
-    }
-
-    private void saveToSDCard(Bitmap bmp, String filename){
-        FileOutputStream out = null;
-        File sd = new File(Environment.getExternalStorageDirectory() + "/frames/"+filename);
-        boolean success = true;
-        if (!sd.exists()) {
-            success = sd.mkdir();
-        }
-        if (success) {
-            filename=filename+sd.list().length;
-            File dest = new File(sd, filename+".png");
-            try {
-                out = new FileOutputStream(dest);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                // PNG is a lossless format, the compression factor (100) is ignored
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }

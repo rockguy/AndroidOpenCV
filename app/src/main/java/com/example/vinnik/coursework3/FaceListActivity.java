@@ -19,8 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
+import static com.example.vinnik.coursework3.ProcessingImage.saveToSDCard;
 
 /**
  * Created by vinnik on 06.12.2016.
@@ -113,34 +113,5 @@ public class FaceListActivity extends Activity {
         //// TODO: Надо вызвать сразу, а не после сохранения файла.
         builder.create();
         builder.show();
-    }
-
-    private void saveToSDCard(Bitmap bmp,String filename){
-        FileOutputStream out = null;
-        File sd = new File(Environment.getExternalStorageDirectory() + "/frames/"+filename);
-        boolean success = true;
-        if (!sd.exists()) {
-            success = sd.mkdir();
-        }
-        if (success) {
-            filename=filename+sd.list().length;
-            File dest = new File(sd, filename+".png");
-            try {
-                out = new FileOutputStream(dest);
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-                // PNG is a lossless format, the compression factor (100) is ignored
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }
