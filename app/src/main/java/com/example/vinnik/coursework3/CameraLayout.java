@@ -286,7 +286,7 @@ public class CameraLayout extends Activity
 
 
         // The faces will be a 20% of the height of the screen
-        absoluteFaceSize = (int) (height * 0.2);
+        absoluteFaceSize = (int) (height * 0.01);
     }
 
 
@@ -298,7 +298,7 @@ public class CameraLayout extends Activity
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame aInputFrame) {
         currentImage = aInputFrame.gray();
-        currentImage2=aInputFrame.gray();
+        currentImage2= aInputFrame.gray();
         // Create a grayscale image
         //Imgproc.cvtColor(aInputFrame, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
         MatOfRect faces = new MatOfRect();

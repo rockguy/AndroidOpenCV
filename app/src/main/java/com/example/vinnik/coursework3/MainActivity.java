@@ -90,7 +90,7 @@ public class MainActivity extends Activity{
         processingPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                absoluteFaceSize = (int) (currentImage.height() * 0.2);
+                absoluteFaceSize = (int) (currentImage.height() * 0.005);
                 // Create a grayscale image
                 //Imgproc.cvtColor(aInputFrame, grayscaleImage, Imgproc.COLOR_RGBA2RGB);
                 MatOfRect faces = new MatOfRect();
@@ -205,7 +205,6 @@ public class MainActivity extends Activity{
                 }
             }
         }
-
     }
 
 
