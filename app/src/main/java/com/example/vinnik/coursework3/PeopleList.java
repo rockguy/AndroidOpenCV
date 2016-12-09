@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
@@ -33,6 +34,38 @@ public class PeopleList extends Activity {
             bitmapName=getIntent().getStringExtra("BitmapName");
         }
 
+        Bundle extras = getIntent().getExtras();
+        if(extras.containsKey("backLink")) {
+            final String backClass = extras.getString("backLink");
+            Button backButton=(Button) findViewById(R.id.backButton);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = null;
+                    try {
+                        intent = new Intent(PeopleList.this, Class.forName(backClass));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    intent.putExtra("backLink",getPackageName()+".PeopleList");
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+
+        Button homeButton=(Button) findViewById(R.id.homeButton);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = null;
+                intent = new Intent(PeopleList.this,MainActivity.class);
+                intent.putExtra("backLink",getPackageName()+".PeopleList");
+                startActivity(intent);
+                finish();
+            }
+        });
+
         final File sd = new File(Environment.getExternalStorageDirectory() + "/frames");
         List<String> people = new ArrayList<>();
         for (File f : sd.listFiles()) {
@@ -55,11 +88,19 @@ public class PeopleList extends Activity {
                 Bitmap bmp = BitmapFactory.decodeFile(f.getPath());
                 saveToSDCard(bmp,selectedFromList);
 
+//
+//                Person person = Person.find(Person.class, "fio = ?", selectedFromList).get(0);
+//                person.save();
+//
+//                Image image = new Image(bmp);
+//                image.owner=person;
+//                image.save();
 
 
 
                 f.delete();
                 Intent intent = new Intent(PeopleList.this, FaceListActivity.class);
+                intent.putExtra("backLink",getPackageName()+".PeopleList");
                 startActivity(intent);
                 finish();
             }

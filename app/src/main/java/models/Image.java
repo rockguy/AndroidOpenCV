@@ -2,51 +2,49 @@ package models;
 
 import android.graphics.Bitmap;
 
-import com.orm.SugarRecord;
-
 /**
  * Created by vinnik on 06.12.2016.
  */
-public class Image extends SugarRecord {
-    private Long id;
-    public Bitmap image;
-    public Boolean isMain;
-    public Person owner;
+public class Image{
+     int id;
+     byte[] image;
+     int isMain;
+     String owner;
 
     public Image(){}
     public Image(Bitmap image){}
 
-//    public void setId(Long id)
-//    {
-//        this.id=id;
-//    }
-//    public void setImage(Bitmap img)
-//    {
-//        this.image=img;
-//    }
-//    public void setIsMain(Boolean isMain)
-//    {
-//        this.isMain=isMain;
-//    }
-//    public void setOwner(Person person)
-//    {
-//        this.owner=person;
-//    }
-//    public Long getId()
-//    {
-//        return this.id;
-//    }
-//    public Bitmap getImage()
-//    {
-//        return this.image;
-//    }
-//    public Boolean getIsMain()
-//    {
-//        return this.isMain;
-//    }
-//    public Person getOwner()
-//    {
-//        return this.owner;
-//    }
+    public void setId(int id)
+    {
+        this.id=id;
+    }
+    public void setImage(byte[] img)
+    {
+        this.image=img;
+    }
+    public void setIsMain(int isMain)
+    {
+        this.isMain=isMain;
+    }
+    public void setOwner(String person)
+    {
+        this.owner=person;
+    }
+    public int getId()
+    {
+        return this.id;
+    }
+    public byte[] getImage()
+    {
+        return this.image;
+    }
+    public int getIsMain()
+    {
+        return this.isMain;
+    }
+    public String getOwner()
+    {
+        return this.owner;
+    }
 
 }

@@ -1,12 +1,14 @@
 package com.example.vinnik.coursework3;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ public class PersonListActivity extends Activity {
     LinearLayout linLayout;
     File sd;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +33,38 @@ public class PersonListActivity extends Activity {
 
         sd = new File(Environment.getExternalStorageDirectory() + "/frames/");
         LayoutInflater ltInflater = getLayoutInflater();
+
+        Bundle extras = getIntent().getExtras();
+        if(extras.containsKey("backLink")) {
+            final String backClass = extras.getString("backLink");
+            Button backButton=(Button) findViewById(R.id.backButton);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = null;
+                    try {
+                        intent = new Intent(PersonListActivity.this, Class.forName(backClass));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    intent.putExtra("backLink",getPackageName()+".PersonListActivity");
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+
+        Button homeButton=(Button) findViewById(R.id.homeButton);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = null;
+                intent = new Intent(PersonListActivity.this,MainActivity.class);
+                intent.putExtra("backLink",getPackageName()+".PersonListActivity");
+                startActivity(intent);
+                finish();
+            }
+        });
 
         if (sd.exists()) {
             for (final File f:
@@ -43,9 +78,24 @@ public class PersonListActivity extends Activity {
 
                     TextView fio = (TextView) personInfo.findViewById(R.id.fio);
                     fio.setText("ФИО: " + f.getName());
+
+                    Button editPersonButton = (Button)  personInfo.findViewById(R.id.editPersonButton);
+                    editPersonButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(PersonListActivity.this, FaceListActivity.class);
+                            intent.putExtra("folderName",f.getName());
+                            intent.putExtra("backLink",getPackageName()+".PersonListActivity");
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+
                     TextView countOfPhoto = (TextView) personInfo.findViewById(R.id.countOfPhoto);
                     countOfPhoto.setText("Число фотографий: " + f.list().length);
                     linLayout.addView(personInfo);
+
+
                 }
             }
         }

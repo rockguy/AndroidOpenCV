@@ -1,24 +1,15 @@
 package com.example.vinnik.coursework3;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AlertDialog;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -36,10 +27,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import static com.example.vinnik.coursework3.ProcessingImage.saveToSDCard;
@@ -133,72 +121,12 @@ public class CameraLayout extends Activity
                 face.release();
                 saveToSDCard(bmp,"tempBitmap");
             }
-
+            intent.putExtra("backLink",getPackageName()+".CameraLayout");
+            intent.putExtra("folderName","tempBitmap");
             startActivity(intent);
             finish();
         }
     };
-
-    private void openFileNameDialog(Drawable icon, final Bitmap bmp)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Введите Фамилию Имя и Отчество человека");
-        builder.setIcon(icon);
-//todo: Потом будет предпроверка с распознаванием
-// Set up the input
-        final EditText input = new EditText(this);
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-        final String[] m_Text = new String[1];
-// Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String filename = "frame " +  input.getText().toString() + ".png";
-                saveToSDCard(bmp,filename);
-
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/frames/"+filename);
-                    saveImage(fis);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        //// TODO: Надо вызвать сразу, а не после сохранения файла.
-        builder.create();
-        builder.show();
-    }
-
-    public void saveImage(FileInputStream fis)
-    {
-        try {
-            byte[] image = new byte[fis.available()];
-            fis.read(image);
-
-            ContentValues values = new ContentValues();
-            values.put("a",image);
-            db.insert("tb",null,values);
-
-            fis.close();
-
-            Toast.makeText(this, "insert success", Toast.LENGTH_SHORT).show();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -210,19 +138,6 @@ public class CameraLayout extends Activity
         setContentView(openCvCameraView);
         openCvCameraView.setCvCameraViewListener(this);
     }
-
-
-    public void getImage()
-    {
-        Cursor c = db.rawQuery("select * from tb",null);
-        if (c.moveToNext())
-        {
-            byte[] image = c.getBlob(0);
-            Bitmap bmp = BitmapFactory.decodeByteArray(image,0,image.length);
-            Toast.makeText(this, "select success", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
     @Override
     public void onCameraViewStarted(int width, int height) {

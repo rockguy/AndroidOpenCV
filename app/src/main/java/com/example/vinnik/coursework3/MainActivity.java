@@ -44,7 +44,7 @@ public class MainActivity extends Activity{
     Button takePictureButton;
     Button getPictureButton;
     Button processingPictureButton;
-    Button listOfPErsonButton;
+    Button listOfPersonButton;
     ImageView imageView;
     Mat currentImage;
     private CascadeClassifier cascadeClassifier;
@@ -60,12 +60,48 @@ public class MainActivity extends Activity{
         takePictureButton = (Button) findViewById(R.id.takePictureButton);
         getPictureButton = (Button) findViewById(R.id.getPictureButton);
         processingPictureButton = (Button) findViewById(R.id.processingPictureButton);
-        listOfPErsonButton=(Button) findViewById(R.id.listOfPErsonButton);
+        listOfPersonButton=(Button) findViewById(R.id.listOfPersonButton);
+
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null && extras.containsKey("backLink")) {
+            final String backClass = extras.getString("backLink");
+            Button backButton=(Button) findViewById(R.id.backButton);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = null;
+                    try {
+                        intent = new Intent(MainActivity.this, Class.forName(backClass));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    intent.putExtra("backLink",getPackageName()+".MainActivity");
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+
+        Button homeButton=(Button) findViewById(R.id.homeButton);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = null;
+                intent = new Intent(MainActivity.this,MainActivity.class);
+                intent.putExtra("backLink",getPackageName()+".MainActivity");
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
 
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CameraLayout.class);
+                intent.putExtra("backLink",getPackageName()+".MainActivity");
                 startActivity(intent);
                 finish();
             }
@@ -76,7 +112,7 @@ public class MainActivity extends Activity{
             public void onClick(View view) {
                 Intent i = new Intent(
                         Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
@@ -100,9 +136,11 @@ public class MainActivity extends Activity{
                 Intent intent =new Intent(MainActivity.this, FaceListActivity.class);
 
                 File sd = new File(Environment.getExternalStorageDirectory() + "/frames/tempBitmap");
-                for (File f:sd.listFiles()
-                        ) {
-                    f.delete();
+                if(sd.length()>0) {
+                    for (File f : sd.listFiles()
+                            ) {
+                        f.delete();
+                    }
                 }
 
                 for (int i = 0; i < facesArray.length; i++) {
@@ -116,14 +154,19 @@ public class MainActivity extends Activity{
                     face.release();
                     saveToSDCard(bmp,"tempBitmap");
                 }
+                intent.putExtra("folderName","tempBitmap");
+                intent.putExtra("backLink",getPackageName()+".MainActivity");
                 startActivity(intent);
+                finish();
             }
         });
 
-        listOfPErsonButton.setOnClickListener(new View.OnClickListener() {
+        listOfPersonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, PersonListActivity.class);
+                intent.putExtra("folderName","tempBitmap");
+                intent.putExtra("backLink",getPackageName()+".MainActivity");
                 startActivity(intent);
                 finish();
             }

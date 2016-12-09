@@ -1,12 +1,10 @@
 package models;
 
-import com.orm.SugarRecord;
-
 /**
  * Created by vinnik on 06.12.2016.
  */
 
-public class Category extends SugarRecord {
+public class Category{
     private Long id;
     String category;
 
